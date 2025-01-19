@@ -6,7 +6,7 @@ export const useForceLogout = () => {
   const client = useQueryClient();
 
   return useCallback(() => {
-    forceLogout(false);
-    client.resetQueries();
+    forceLogout();
+    client.clear();
   }, [client]);
 };

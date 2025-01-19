@@ -1,4 +1,5 @@
 import { LoginForm, LoginFormValues } from "@/components/forms/login";
+import { Button } from "@/components/ui/button";
 import { useLoginMutation } from "@/hooks/mutations/auth/login";
 import { ApplicationUrls } from "@/libs/router-dom";
 import { useCallback } from "react";
@@ -29,7 +30,18 @@ const LoginPage = () => {
       </header>
 
       <LoginForm onSubmit={loginHandler} />
-      {/* TODO: add login by Google */}
+
+      <p className="text-center my-5">or</p>
+
+      <ul>
+        <li>
+          <Button variant={"outline"} className="w-full" asChild>
+            <a href="http://localhost:8001/auth/google/login">
+              Login with Google
+            </a>
+          </Button>
+        </li>
+      </ul>
 
       <footer className="mx-auto mt-8 flex justify-center gap-1 text-sm text-muted-foreground">
         <p>Don't have an account?</p>

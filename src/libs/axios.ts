@@ -3,6 +3,8 @@ import {
   ACCESS_TOKEN_COOKIE_NAME,
   REFRESH_TOKEN_COOKIE_NAME,
 } from "@/const/cookies";
+import { forceLogout } from "@/utils/force-logout";
+import { setTokens } from "@/utils/tokens";
 import axios from "axios";
 import { CookieService } from "./universal-cookies";
 
@@ -32,8 +34,7 @@ axiosInstance.interceptors.response.use(
 
         const { accessToken, refreshToken } = refreshResponse.data;
 
-        CookieService.set(ACCESS_TOKEN_COOKIE_NAME, accessToken);
-        CookieService.set(REFRESH_TOKEN_COOKIE_NAME, refreshToken);
+        setTokens(accessToken, refreshToken);
 
         axiosInstance.defaults.headers.common[
           "Authorization"
@@ -41,9 +42,7 @@ axiosInstance.interceptors.response.use(
 
         return axiosInstance(originalRequest);
       } catch (error) {
-        CookieService.delete(ACCESS_TOKEN_COOKIE_NAME);
-        CookieService.delete(REFRESH_TOKEN_COOKIE_NAME);
-        window.location.reload();
+        forceLogout();
         return Promise.reject(error);
       }
     }

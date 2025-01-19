@@ -1,12 +1,7 @@
-import {
-  ACCESS_TOKEN_COOKIE_NAME,
-  REFRESH_TOKEN_COOKIE_NAME,
-} from "@/const/cookies";
-import { CookieService } from "@/libs/universal-cookies";
+import { clearTokens } from "./tokens";
 
 export const forceLogout = (reload = true) => {
-  CookieService.delete(ACCESS_TOKEN_COOKIE_NAME);
-  CookieService.delete(REFRESH_TOKEN_COOKIE_NAME);
+  clearTokens();
 
   if (reload) window.location.reload();
 };

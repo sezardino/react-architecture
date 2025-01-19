@@ -1,6 +1,7 @@
 import { AuthLayout } from "@/components/layouts/auth";
 import { LandingLayout } from "@/components/layouts/landing";
 import { currentUserQuery } from "@/hooks/queries/app/current-user";
+import AuthPage from "@/pages/auth";
 import LoginPage from "@/pages/auth/login";
 import RegistrationPage from "@/pages/auth/registration";
 import AboutPage from "@/pages/landing/about";
@@ -69,11 +70,8 @@ export const router = createBrowserRouter([
           </AuthLayout>
         ),
         children: [
-          {
-            path: ApplicationUrls.auth.login,
-            index: true,
-            Component: LoginPage,
-          },
+          { path: ApplicationUrls.auth.index, Component: AuthPage },
+          { path: ApplicationUrls.auth.login, Component: LoginPage },
           { path: ApplicationUrls.auth.register, Component: RegistrationPage },
         ],
       },
