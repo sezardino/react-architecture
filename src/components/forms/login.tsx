@@ -87,7 +87,11 @@ export const LoginForm = (props: LoginFormProps) => {
           )}
         />
 
-        <Button type="submit" className="mt-2 w-full">
+        <Button
+          type="submit"
+          disabled={form.formState.isSubmitting}
+          className="mt-2 w-full"
+        >
           Login
         </Button>
       </form>

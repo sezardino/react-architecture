@@ -4,6 +4,6 @@ export const ApplicationUrls = Object.freeze({
   auth: {
     index: "/auth",
     login: "/auth/login",
-    register: "/auth/register",
+    register: "/auth/registration",
   },
 });

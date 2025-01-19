@@ -7,7 +7,7 @@ export class AuthApiService {
   }
 
   static register(dto: AuthDto) {
-    return axiosInstance.post<AuthResponse>("/auth/register", dto);
+    return axiosInstance.post<void>("/auth/registration", dto);
   }
 
   static refreshAccessToken(token: string) {

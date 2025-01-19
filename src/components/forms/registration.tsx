@@ -11,57 +11,51 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
-import { FormState } from "@/server/types";
-import { cn } from "@/utils/cn";
+import { REGEX_LOGIN } from "@/const/regexp";
+import { cn } from "@/utils/shadcn";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ComponentPropsWithoutRef, useActionState } from "react";
+import { ComponentPropsWithoutRef } from "react";
 import { useForm } from "react-hook-form";
-import {
-  RegistrationFormSchema,
-  RegistrationFormValues,
-} from "./registration-form.schema";
+import { z } from "zod";
 
-export type RegistrationFormProps = Omit<
-  ComponentPropsWithoutRef<"form">,
-  "action"
-> & {
-  action: (
-    state: FormState<RegistrationFormValues>,
-    formData: unknown
-  ) => Promise<FormState<RegistrationFormValues>>;
-};
+export const RegistrationFormSchema = z
+  .object({
+    name: z.string({ required_error: "Name is required field" }),
+    login: z
+      .string({ required_error: "Login is required field" })
+      .regex(
+        REGEX_LOGIN,
+        "Login must be 3-20 characters long, contain only letters, numbers, underscores, or dots, and cannot start or end with special characters."
+      ),
+    password: z.string({ required_error: "Password is required field" }),
+    confirm: z.string({ required_error: "Password mismatch" }),
+  })
+  .refine(({ password, confirm }) => password === confirm, "Password mismatch");
 
-const formatErrors = <T extends Record<string, string>>(
-  formState?: FormState<T>
-) => {
-  const errors = Object.entries(formState?.errors || {}).map(([id, error]) => ({
-    id,
-    error,
-  }));
+export type RegistrationFormValues = z.infer<typeof RegistrationFormSchema>;
 
-  return errors;
+type OmittedProps = Omit<ComponentPropsWithoutRef<"form">, "onSubmit">;
+export type RegistrationFormProps = OmittedProps & {
+  onSubmit: (values: RegistrationFormValues) => Promise<void>;
 };
 
 export const RegistrationForm = (props: RegistrationFormProps) => {
-  const { action, className, ...rest } = props;
-
-  const [state, formAction] = useActionState(
-    action,
-    undefined as unknown as FormState<RegistrationFormValues>
-  );
+  const { onSubmit, className, ...rest } = props;
 
   const form = useForm<RegistrationFormValues>({
     resolver: zodResolver(RegistrationFormSchema),
     mode: "all",
   });
 
-  const errors = formatErrors(state);
+  const submitHandler = (values: RegistrationFormValues) => {
+    onSubmit(values);
+  };
 
   return (
     <Form {...form}>
       <form
         {...rest}
-        action={formAction}
+        onSubmit={form.handleSubmit(submitHandler)}
         className={cn("grid gap-4", className)}
       >
         <FormField
@@ -132,22 +126,9 @@ export const RegistrationForm = (props: RegistrationFormProps) => {
           )}
         />
 
-        {(!!errors.length || !!state?.message) && (
-          <div>
-            {state.message && (
-              <h3 className="text-sm text-destructive">{state.message}</h3>
-            )}
-            <ul className="text-xs text-destructive">
-              {errors.map((error) => (
-                <li key={error.id}>{error.error}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-
         <Button
           type="submit"
-          disabled={!form.formState.isValid}
+          disabled={form.formState.isSubmitting}
           className="mt-2 w-full"
         >
           Create an account
