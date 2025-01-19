@@ -1,20 +1,26 @@
 import { AuthLayout } from "@/components/layouts/auth";
 import { LandingLayout } from "@/components/layouts/landing";
+import { currentUserQuery } from "@/hooks/queries/app/current-user";
 import LoginPage from "@/pages/auth/login";
 import RegistrationPage from "@/pages/auth/registration";
 import AboutPage from "@/pages/landing/about";
-import HomePage from "@/pages/landing/home";
-import { createBrowserRouter, Outlet } from "react-router-dom";
-import { ApplicationUrls } from "./const";
 import AdminPage from "@/pages/landing/admin";
 import ContactPage from "@/pages/landing/contact";
 import CustomerPage from "@/pages/landing/customer";
+import HomePage from "@/pages/landing/home";
 import ProtectedPage from "@/pages/landing/protected";
 import TermsPage from "@/pages/landing/terms";
+import { createBrowserRouter, Outlet } from "react-router-dom";
+import { getFromCacheOrFetch } from "../react-query";
+import { ApplicationUrls } from "./const";
 
 export const router = createBrowserRouter([
   {
     path: "/",
+    loader: () => {
+      getFromCacheOrFetch(currentUserQuery);
+      return null;
+    },
     children: [
       {
         path: ApplicationUrls.landing.home,
