@@ -13,7 +13,7 @@ const LoginPage = () => {
     async (values: LoginFormValues) => {
       try {
         await login(values);
-        navigate(ApplicationUrls.home);
+        navigate(ApplicationUrls.landing.home);
       } catch (e) {
         console.error(e);
       }

@@ -39,10 +39,11 @@ const links: NavLink[] = [
 type NavbarProps = ComponentPropsWithoutRef<"header"> & {
   // TODO: add correct props when action (get current user data) will be created
   isUserAuthenticated: boolean;
+  onLogoutClick: () => void;
 };
 
 export const Navbar = (props: NavbarProps) => {
-  const { isUserAuthenticated, className, ...rest } = props;
+  const { isUserAuthenticated, onLogoutClick, className, ...rest } = props;
   const location = useLocation();
   const menuId = useId();
 
@@ -77,7 +78,9 @@ export const Navbar = (props: NavbarProps) => {
             </>
           )}
 
-          {isUserAuthenticated && <Button>Log Out</Button>}
+          {isUserAuthenticated && (
+            <Button onClick={onLogoutClick}>Log Out</Button>
+          )}
 
           <Button
             data-collapse-toggle={menuId}
