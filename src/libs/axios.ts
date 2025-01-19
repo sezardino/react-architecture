@@ -1,3 +1,4 @@
+import { AuthApiService } from "@/api/auth";
 import {
   ACCESS_TOKEN_COOKIE_NAME,
   REFRESH_TOKEN_COOKIE_NAME,
@@ -27,12 +28,21 @@ axiosInstance.interceptors.response.use(
 
       originalRequest._retry = true;
       try {
-        // TODO: refresh token functionality
+        const refreshResponse = await AuthApiService.refreshAccessToken(token);
+
+        const { accessToken, refreshToken } = refreshResponse.data;
+
+        CookieService.set(ACCESS_TOKEN_COOKIE_NAME, accessToken);
+        CookieService.set(REFRESH_TOKEN_COOKIE_NAME, refreshToken);
+
+        axiosInstance.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${accessToken}`;
 
         return axiosInstance(originalRequest);
       } catch (error) {
-        CookieService.delete(REFRESH_TOKEN_COOKIE_NAME);
         CookieService.delete(ACCESS_TOKEN_COOKIE_NAME);
+        CookieService.delete(REFRESH_TOKEN_COOKIE_NAME);
         window.location.reload();
         return Promise.reject(error);
       }
