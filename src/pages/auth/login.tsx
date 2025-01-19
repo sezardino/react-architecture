@@ -1,8 +1,26 @@
-import { LoginForm } from "@/components/forms/login";
+import { LoginForm, LoginFormValues } from "@/components/forms/login";
+import { useLoginMutation } from "@/hooks/mutations/auth/login";
 import { ApplicationUrls } from "@/libs/router-dom";
-import { Link } from "react-router-dom";
+import { useCallback } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+
+  const { mutateAsync: login } = useLoginMutation();
+
+  const loginHandler = useCallback(
+    async (values: LoginFormValues) => {
+      try {
+        await login(values);
+        navigate(ApplicationUrls.home);
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    [login, navigate]
+  );
+
   return (
     <main>
       <header className="mb-6 flex flex-col items-center">
@@ -10,7 +28,7 @@ const LoginPage = () => {
         <p className="text-muted-foreground">Enter your information to login</p>
       </header>
 
-      <LoginForm onSubmit={async (values) => console.log(values)} />
+      <LoginForm onSubmit={loginHandler} />
       {/* TODO: add login by Google */}
 
       <footer className="mx-auto mt-8 flex justify-center gap-1 text-sm text-muted-foreground">
