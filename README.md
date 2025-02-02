@@ -54,6 +54,8 @@ src/
 ├── main.tsx      # Entry point
 ```
 
+Each major folder contains a README.md file, which explains the purpose of the folder and, if necessary, provides usage examples.
+
 ## **Authentication**
 
 The project includes a basic authentication system to demonstrate how the architecture handles business logic at higher levels in the component tree. It utilizes:
